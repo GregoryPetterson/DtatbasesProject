@@ -23,13 +23,11 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { AddUserComponent } from './users/add-user.component';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
-import { UserCardComponent } from './users/user-card.component';
-import { UserListComponent } from './users/user-list.component';
-import { UserProfileComponent } from './users/user-profile.component';
+import { FilePickerDirective } from './file-picker.directive';
+import { FilePickerComponent } from './file-picker/file-picker.component';
 
 const MATERIAL_MODULES: any[] = [
   MatButtonModule,
@@ -54,10 +52,8 @@ const MATERIAL_MODULES: any[] = [
   declarations: [
     AppComponent,
     HomeComponent,
-    UserListComponent,
-    UserCardComponent,
-    UserProfileComponent,
-    AddUserComponent,
+    FilePickerDirective,
+    FilePickerComponent,
   ],
   imports: [
     BrowserModule,

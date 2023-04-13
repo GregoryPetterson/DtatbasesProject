@@ -1,4 +1,4 @@
-package umm3601.user;
+package umm3601.stats;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
@@ -31,7 +31,7 @@ import io.javalin.http.NotFoundResponse;
 /**
  * Controller that manages requests for info about users.
  */
-public class UserController {
+public class StatsController {
 
   static final String AGE_KEY = "age";
   static final String COMPANY_KEY = "company";
@@ -42,18 +42,18 @@ public class UserController {
   private static final String ROLE_REGEX = "^(admin|editor|viewer)$";
   public static final String EMAIL_REGEX = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
 
-  private final JacksonMongoCollection<User> userCollection;
+  private final JacksonMongoCollection<Stats> userCollection;
 
   /**
    * Construct a controller for users.
    *
    * @param database the database containing user data
    */
-  public UserController(MongoDatabase database) {
+  public StatsController(MongoDatabase database) {
     userCollection = JacksonMongoCollection.builder().build(
         database,
         "users",
-        User.class,
+        Stats.class,
         UuidRepresentation.STANDARD);
   }
 
@@ -65,7 +65,7 @@ public class UserController {
    */
   public void getUser(Context ctx) {
     String id = ctx.pathParam("id");
-    User user;
+    Stats user;
 
     try {
       user = userCollection.find(eq("_id", new ObjectId(id))).first();
@@ -94,7 +94,7 @@ public class UserController {
     // database system. So MongoDB is going to find the users with the specified
     // properties, return those sorted in the specified manner, and put the
     // results into an initially empty ArrayList.
-    ArrayList<User> matchingUsers = userCollection
+    ArrayList<Stats> matchingUsers = userCollection
       .find(combinedFilter)
       .sort(sortingOrder)
       .into(new ArrayList<>());
@@ -163,7 +163,7 @@ public class UserController {
      *    - The provided role is valid (one of "admin", "editor", or "viewer")
      *    - A non-blank company is provided
      */
-    User newUser = ctx.bodyValidator(User.class)
+    Stats newUser = ctx.bodyValidator(Stats.class)
       .check(usr -> usr.name != null && usr.name.length() > 0, "User must have a non-empty user name")
       .check(usr -> usr.email.matches(EMAIL_REGEX), "User must have a legal email")
       .check(usr -> usr.age > 0, "User's age must be greater than zero")

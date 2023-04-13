@@ -1,4 +1,4 @@
-package umm3601.user;
+package umm3601.stats;
 
 import org.mongojack.Id;
 import org.mongojack.ObjectId;
@@ -19,7 +19,7 @@ import org.mongojack.ObjectId;
 // check in CheckStyle so that we don't get a failed
 // build when Gradle runs CheckStyle.
 @SuppressWarnings({"VisibilityModifier"})
-public class User {
+public class Stats {
 
   @ObjectId @Id
   // By default Java field names shouldn't start with underscores.
@@ -37,10 +37,10 @@ public class User {
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof User)) {
+    if (!(obj instanceof Stats)) {
       return false;
     }
-    User other = (User) obj;
+    Stats other = (Stats) obj;
     return _id.equals(other._id);
   }
 

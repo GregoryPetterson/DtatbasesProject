@@ -12,8 +12,8 @@ import org.bson.UuidRepresentation;
 
 import io.javalin.Javalin;
 import io.javalin.plugin.bundled.RouteOverviewPlugin;
+import umm3601.stats.StatsController;
 import io.javalin.http.InternalServerErrorResponse;
-import umm3601.user.UserController;
 
 public class Server {
 
@@ -41,7 +41,7 @@ public class Server {
     MongoDatabase database = mongoClient.getDatabase(databaseName);
 
     // Initialize dependencies
-    UserController userController = new UserController(database);
+    StatsController userController = new StatsController(database);
 
     Javalin server = Javalin.create(config ->
       config.plugins.register(new RouteOverviewPlugin("/api"))
