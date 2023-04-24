@@ -38,20 +38,17 @@ export class FilePickerDirective implements OnDestroy, OnChanges {
   private _multiple = false;
 
   constructor(
-    @Optional() @Inject(DOCUMENT) private document: Document,
+    @Optional() @Inject(DOCUMENT) private _document: Document,
   ) {
-    if (this.document) {
-      this._form = this.document.createElement('form');
-      this._nativeFileElement = this.document.createElement('input');
+    if (this._document) {
+      this._form = this._document.createElement('form');
+      this._nativeFileElement = this._document.createElement('input');
       this._nativeFileElement.type = 'file';
-      this._nativeFileElement.multiple = this._multiple;
-      this._nativeFileElement.addEventListener('change', this.onFilesChanged);
+      this._nativeFileElement.multiple = this.multiple;
+      this._nativeFileElement.addEventListener('change', this._onFilesChanged);
       this._form.appendChild(this._nativeFileElement);
     }
   }
-
-
-
 
   /**
    * Native input[type=file] element.
@@ -65,12 +62,14 @@ export class FilePickerDirective implements OnDestroy, OnChanges {
     get files(): FileList | undefined {
       return this._nativeFileElement.files;
     }
-      /**
-       * Allow _multiple file selection. Defaults to `false`.
-       * **/
+
+    /**
+     * Allow _multiple file selection. Defaults to `false`.
+     * **/
     get multiple() {
-      return this._multiple;
+    return this._multiple;
     }
+
     @Input()
     set multiple(val: boolean) {
       this._multiple = coerceBooleanProperty(val);
@@ -94,7 +93,7 @@ export class FilePickerDirective implements OnDestroy, OnChanges {
     event.preventDefault();
     const files = event.dataTransfer.files;
     this._nativeFileElement.files = files;
-    this.onFilesChanged();
+    this._onFilesChanged();
   }
 
   /**
@@ -107,13 +106,13 @@ export class FilePickerDirective implements OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes._multiple) {
-      this._nativeFileElement.multiple = this._multiple;
+    if (changes.multiple) {
+      this._nativeFileElement.multiple = this.multiple;
     }
   }
 
   ngOnDestroy() {
-    this._nativeFileElement.removeEventListener('change', this.onFilesChanged);
+    this._nativeFileElement.removeEventListener('change', this._onFilesChanged);
     this._nativeFileElement.remove();
     this._form.remove();
   }
@@ -130,7 +129,7 @@ export class FilePickerDirective implements OnDestroy, OnChanges {
      * Native input[type=file] element.
      **/
 
-    private onFilesChanged = () => {
+    private _onFilesChanged = () => {
       this.filesChanged.emit(this._nativeFileElement.files);
     };
 
