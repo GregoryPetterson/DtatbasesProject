@@ -33,15 +33,6 @@ import io.javalin.http.NotFoundResponse;
  */
 public class StatsController {
 
-  static final String AGE_KEY = "age";
-  static final String COMPANY_KEY = "company";
-  static final String ROLE_KEY = "role";
-  static final String SORT_ORDER_KEY = "sortorder";
-
-  private static final int REASONABLE_AGE_LIMIT = 150;
-  private static final String ROLE_REGEX = "^(admin|editor|viewer)$";
-  public static final String EMAIL_REGEX = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
-
   private final JacksonMongoCollection<Stats> userCollection;
 
   /**
@@ -55,29 +46,6 @@ public class StatsController {
         "users",
         Stats.class,
         UuidRepresentation.STANDARD);
-  }
-
-  /**
-   * Set the JSON body of the response to be the single user
-   * specified by the `id` parameter in the request
-   *
-   * @param ctx a Javalin HTTP context
-   */
-  public void getUser(Context ctx) {
-    String id = ctx.pathParam("id");
-    Stats user;
-
-    try {
-      user = userCollection.find(eq("_id", new ObjectId(id))).first();
-    } catch (IllegalArgumentException e) {
-      throw new BadRequestResponse("The requested user id wasn't a legal Mongo Object ID.");
-    }
-    if (user == null) {
-      throw new NotFoundResponse("The requested user was not found");
-    } else {
-      ctx.json(user);
-      ctx.status(HttpStatus.OK);
-    }
   }
 
   /**
@@ -108,42 +76,7 @@ public class StatsController {
     ctx.status(HttpStatus.OK);
   }
 
-  private Bson constructFilter(Context ctx) {
-    List<Bson> filters = new ArrayList<>(); // start with a blank document
 
-    if (ctx.queryParamMap().containsKey(AGE_KEY)) {
-      int targetAge = ctx.queryParamAsClass(AGE_KEY, Integer.class)
-        .check(it -> it > 0, "User's age must be greater than zero")
-        .check(it -> it < REASONABLE_AGE_LIMIT, "User's age must be less than " + REASONABLE_AGE_LIMIT)
-        .get();
-      filters.add(eq(AGE_KEY, targetAge));
-    }
-    if (ctx.queryParamMap().containsKey(COMPANY_KEY)) {
-      Pattern pattern = Pattern.compile(Pattern.quote(ctx.queryParam(COMPANY_KEY)), Pattern.CASE_INSENSITIVE);
-      filters.add(regex(COMPANY_KEY, pattern));
-    }
-    if (ctx.queryParamMap().containsKey(ROLE_KEY)) {
-      String role = ctx.queryParamAsClass(ROLE_KEY, String.class)
-        .check(it -> it.matches(ROLE_REGEX), "User must have a legal user role")
-        .get();
-      filters.add(eq(ROLE_KEY, role));
-    }
-
-    // Combine the list of filters into a single filtering document.
-    Bson combinedFilter = filters.isEmpty() ? new Document() : and(filters);
-
-    return combinedFilter;
-  }
-
-  private Bson constructSortingOrder(Context ctx) {
-    // Sort the results. Use the `sortby` query param (default "name")
-    // as the field to sort by, and the query param `sortorder` (default
-    // "asc") to specify the sort order.
-    String sortBy = Objects.requireNonNullElse(ctx.queryParam("sortby"), "name");
-    String sortOrder = Objects.requireNonNullElse(ctx.queryParam("sortorder"), "asc");
-    Bson sortingOrder = sortOrder.equals("desc") ?  Sorts.descending(sortBy) : Sorts.ascending(sortBy);
-    return sortingOrder;
-  }
 
   /**
    * Add a new user using information from the context
@@ -163,17 +96,6 @@ public class StatsController {
      *    - The provided role is valid (one of "admin", "editor", or "viewer")
      *    - A non-blank company is provided
      */
-    Stats newUser = ctx.bodyValidator(Stats.class)
-      .check(usr -> usr.name != null && usr.name.length() > 0, "User must have a non-empty user name")
-      .check(usr -> usr.email.matches(EMAIL_REGEX), "User must have a legal email")
-      .check(usr -> usr.age > 0, "User's age must be greater than zero")
-      .check(usr -> usr.age < REASONABLE_AGE_LIMIT, "User's age must be less than " + REASONABLE_AGE_LIMIT)
-      .check(usr -> usr.role.matches(ROLE_REGEX), "User must have a legal user role")
-      .check(usr -> usr.company != null && usr.company.length() > 0, "User must have a non-empty company name")
-      .get();
-
-    // Generate a user avatar (you won't need this part for todos)
-    newUser.avatar = generateAvatar(newUser.email);
 
     userCollection.insertOne(newUser);
 
@@ -185,61 +107,5 @@ public class StatsController {
     ctx.status(HttpStatus.CREATED);
   }
 
-  /**
-   * Delete the user specified by the `id` parameter in the request.
-   *
-   * @param ctx a Javalin HTTP context
-   */
-  public void deleteUser(Context ctx) {
-    String id = ctx.pathParam("id");
-    DeleteResult deleteResult = userCollection.deleteOne(eq("_id", new ObjectId(id)));
-    if (deleteResult.getDeletedCount() != 1) {
-      ctx.status(HttpStatus.NOT_FOUND);
-      throw new NotFoundResponse(
-        "Was unable to delete ID "
-          + id
-          + "; perhaps illegal ID or an ID for an item not in the system?");
-    }
-    ctx.status(HttpStatus.OK);
-  }
 
-  /**
-   * Utility function to generate an URI that points
-   * at a unique avatar image based on a user's email.
-   *
-   * This uses the service provided by gravatar.com; there
-   * are numerous other similar services that one could
-   * use if one wished.
-   *
-   * @param email the email to generate an avatar for
-   * @return a URI pointing to an avatar image
-   */
-  private String generateAvatar(String email) {
-    String avatar;
-    try {
-      // generate unique md5 code for identicon
-      avatar = "https://gravatar.com/avatar/" + md5(email) + "?d=identicon";
-    } catch (NoSuchAlgorithmException ignored) {
-      // set to mystery person
-      avatar = "https://gravatar.com/avatar/?d=mp";
-    }
-    return avatar;
-  }
-
-  /**
-   * Utility function to generate the md5 hash for a given string
-   *
-   * @param str the string to generate a md5 for
-   */
-  @SuppressWarnings("lgtm[java/weak-cryptographic-algorithm]")
-  public String md5(String str) throws NoSuchAlgorithmException {
-    MessageDigest md = MessageDigest.getInstance("MD5");
-    byte[] hashInBytes = md.digest(str.toLowerCase().getBytes(StandardCharsets.UTF_8));
-
-    StringBuilder result = new StringBuilder();
-    for (byte b : hashInBytes) {
-      result.append(String.format("%02x", b));
-    }
-    return result.toString();
-  }
 }

@@ -28,13 +28,6 @@ public class Stats {
   @SuppressWarnings({"MemberName"})
   public String _id;
 
-  public String name;
-  public int age;
-  public String company;
-  public String email;
-  public String avatar;
-  public String role;
-
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof Stats)) {
