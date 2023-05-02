@@ -3,9 +3,6 @@ import {
   Directive,
   HostListener,
   Output,
-  Input,
-  OnChanges,
-  SimpleChanges,
   OnDestroy,
   EventEmitter,
   Optional,
@@ -18,7 +15,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
   selector: '[appFilePicker]',
   exportAs: 'appFilePicker',
 })
-export class FilePickerDirective implements OnDestroy, OnChanges {
+export class FilePickerDirective implements OnDestroy {
 
   /**
    * File list emitted on change.
@@ -35,8 +32,6 @@ export class FilePickerDirective implements OnDestroy, OnChanges {
 
   private _nativeFileElement: HTMLInputElement;
 
-  private _multiple = false;
-
   constructor(
     @Optional() @Inject(DOCUMENT) private _document: Document,
   ) {
@@ -44,7 +39,7 @@ export class FilePickerDirective implements OnDestroy, OnChanges {
       this._form = this._document.createElement('form');
       this._nativeFileElement = this._document.createElement('input');
       this._nativeFileElement.type = 'file';
-      this._nativeFileElement.multiple = this.multiple;
+      this._nativeFileElement.multiple = true;
       this._nativeFileElement.addEventListener('change', this._onFilesChanged);
       this._form.appendChild(this._nativeFileElement);
     }
@@ -63,38 +58,6 @@ export class FilePickerDirective implements OnDestroy, OnChanges {
       return this._nativeFileElement.files;
     }
 
-    /**
-     * Allow _multiple file selection. Defaults to `false`.
-     * **/
-    get multiple() {
-    return this._multiple;
-    }
-
-    @Input()
-    set multiple(val: boolean) {
-      this._multiple = coerceBooleanProperty(val);
-    }
-
-
-  /**
-   * Prevent dragover event so drop events register.
-   **/
-  @HostListener('dragover', ['$event'])
-  _onDragOver(event: DragEvent) {
-    event.preventDefault();
-  }
-
-  /**
-   * Set files on drop.
-   * Emit selected files.
-   **/
-  @HostListener('drop', ['$event'])
-  _drop(event: DragEvent) {
-    event.preventDefault();
-    const files = event.dataTransfer.files;
-    this._nativeFileElement.files = files;
-    this._onFilesChanged();
-  }
 
   /**
    * Invoke file browse on click.
@@ -103,12 +66,6 @@ export class FilePickerDirective implements OnDestroy, OnChanges {
   _onClick(event: Event) {
     event.preventDefault();
     this._nativeFileElement.click();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.multiple) {
-      this._nativeFileElement.multiple = this.multiple;
-    }
   }
 
   ngOnDestroy() {

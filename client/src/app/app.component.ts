@@ -1,11 +1,12 @@
+/* eslint-disable no-underscore-dangle */
 import { Component, ViewChild } from '@angular/core';
 
 import { FilePickerDirective } from './file-picker.directive';
 
 @Component({
-  selector: 'app-mine',
+  selector: 'app-stats',
   templateUrl: './app.component.html',
-  styleUrls: [ './app.component.css' ]
+  styleUrls: [ './app.component.scss' ]
 })
 export class AppComponent {
 
@@ -13,26 +14,29 @@ export class AppComponent {
   @ViewChild('buttonPicker', { static: true })
   buttonPicker: FilePickerDirective;
 
-  @ViewChild('dropZonePicker', { static: true })
-  dropZonePicker: FilePickerDirective;
-
-  _multiple = false;
-  selectedFiles = [];
+  _selectedFiles = [];
 
   _onFilesChanged(files: FileList) {
-    this.selectedFiles = [];
+    this._selectedFiles = [];
     const fileArray = Array.from(files);
     for (const file of fileArray) {
-    this.selectedFiles.push(file);
+    this._selectedFiles.push(file);
     }
+    this.onSubmit();
+
   }
 
+
   _onReset() {
-    this.selectedFiles = [];
+    this._selectedFiles = [];
   }
 
   _reset() {
     this.buttonPicker.reset();
-    this.dropZonePicker.reset();
+  }
+
+  private onSubmit(): void {
+    // Here you can add the logic to submit the selected files.
+    // For example, you can send them to an API endpoint using the HttpClient.
   }
 }
