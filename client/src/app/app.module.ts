@@ -9,10 +9,12 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { FilePickerDirective } from './file-picker.directive';
 import { SelectedFilesTableComponent } from './selected-files-table/selected-files-table.component';
+import { FileUploaderService } from './uploader.service';
 
 @NgModule({
   imports: [
@@ -26,6 +28,7 @@ import { SelectedFilesTableComponent } from './selected-files-table/selected-fil
     MatDividerModule,
     MatTabsModule,
     MatTableModule,
+    HttpClientModule
   ],
   declarations: [
     AppComponent,

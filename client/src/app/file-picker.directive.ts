@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import {
   Directive,
   HostListener,
@@ -9,85 +8,55 @@ import {
   Inject,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 @Directive({
   selector: '[appFilePicker]',
-  exportAs: 'appFilePicker',
+  exportAs: 'appFilePicker'
 })
 export class FilePickerDirective implements OnDestroy {
+  @Output() filesChanged = new EventEmitter<FileList>();
+  @Output() filesReset = new EventEmitter<void>();
 
-  /**
-   * File list emitted on change.
-   * **/
-  @Output()
-  filesChanged = new EventEmitter<FileList>();
-  /**
-   * File list emitted on change.
-   * **/
-  @Output()
-  filesReset = new EventEmitter();
+  private form: HTMLFormElement;
+  private nativeFileElement: HTMLInputElement;
 
-  private _form: HTMLFormElement;
-
-  private _nativeFileElement: HTMLInputElement;
-
-  constructor(
-    @Optional() @Inject(DOCUMENT) private _document: Document,
-  ) {
-    if (this._document) {
-      this._form = this._document.createElement('form');
-      this._nativeFileElement = this._document.createElement('input');
-      this._nativeFileElement.type = 'file';
-      this._nativeFileElement.multiple = true;
-      this._nativeFileElement.addEventListener('change', this._onFilesChanged);
-      this._form.appendChild(this._nativeFileElement);
+  constructor(@Optional() @Inject(DOCUMENT) private document: Document) {
+    if (this.document) {
+      this.form = this.document.createElement('form');
+      this.nativeFileElement = this.document.createElement('input');
+      this.nativeFileElement.type = 'file';
+      this.nativeFileElement.multiple = true;
+      this.nativeFileElement.addEventListener('change', this.onFilesChanged);
+      this.form.appendChild(this.nativeFileElement);
     }
   }
 
-  /**
-   * Native input[type=file] element.
-   **/
-  get nativeFileElement() {
-    return this._nativeFileElement;
+  get files(): FileList | undefined {
+    return this.nativeFileElement.files;
   }
-    /**
-     * Selected Files
-     **/
-    get files(): FileList | undefined {
-      return this._nativeFileElement.files;
-    }
 
+  get nativeElement(): HTMLInputElement {
+    return this.nativeFileElement;
+  }
 
-  /**
-   * Invoke file browse on click.
-   **/
   @HostListener('click', ['$event'])
-  _onClick(event: Event) {
+  onClick(event: Event) {
     event.preventDefault();
-    this._nativeFileElement.click();
+    this.nativeFileElement.click();
   }
 
   ngOnDestroy() {
-    this._nativeFileElement.removeEventListener('change', this._onFilesChanged);
-    this._nativeFileElement.remove();
-    this._form.remove();
+    this.nativeFileElement.removeEventListener('change', this.onFilesChanged);
+    this.nativeFileElement.remove();
+    this.form.remove();
   }
 
-  /**
-   * Reset file list.
-   **/
   reset() {
-    this._form.reset();
+    this.form.reset();
     this.filesReset.emit();
   }
 
-    /**
-     * Native input[type=file] element.
-     **/
-
-    private _onFilesChanged = () => {
-      this.filesChanged.emit(this._nativeFileElement.files);
-    };
-
+  private onFilesChanged = () => {
+    this.filesChanged.emit(this.nativeFileElement.files);
+  };
 }
