@@ -1,0 +1,24 @@
+
+<div class="flex-row">
+  <div class="flex-1">
+
+    <mat-card class="search-card">
+      <mat-card-header>
+        <mat-card-title class="stats-table-title">Your Minecraft Stats</mat-card-title>
+      </mat-card-header>
+      <mat-card>
+
+        <mat-card>
+          <mat-card-content>
+            <div *ngFor="let stat of servedStats">
+              <h2>{{ stat }}</h2>
+              <mat-list>
+                <mat-list-item *ngFor="let item of servedStats[stat] | keyvalue">
+                  {{ item.key }}: {{ item.value }}
+                </mat-list-item>
+              </mat-list>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+
