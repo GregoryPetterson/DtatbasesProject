@@ -4,23 +4,29 @@
   <mat-toolbar fxLayoutGap="16px">
     <span fxFlex>Minecraft World Statistics</span>
   </mat-toolbar>
+
+  <mat-toolbar>
+    <button #filePicker="appFilePicker" mat-raised-button color="primary" appFilePicker
+    (filesChanged)="onFilesChanged($event)" (filesReset)="onReset()">
+    Upload stats of your worlds
+</button>
+  </mat-toolbar>
   <div fxFlex>
-    <mat-tab-group>
-      <mat-tab label="Button">
-        <div class="tab-container" fxLayoutAlign="center center">
-          <button #filePicker="appFilePicker" mat-raised-button color="primary" appFilePicker
-                  (filesChanged)="onFilesChanged($event)" (filesReset)="onReset()">
-            Upload
-          </button>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
     <mat-divider></mat-divider>
     <div>
       <mat-toolbar>
-        <span>Selected Files:</span>
+        <span>Uploaded Files:</span>
       </mat-toolbar>
       <app-selected-files-table [files]="selectedFiles"></app-selected-files-table>
+    </div>
+  </div>
+  <div fxFlex>
+    <mat-divider></mat-divider>
+    <div>
+      <mat-toolbar>
+        <span>Your Minecraft Stats:</span>
+      </mat-toolbar>
+      <app-stats-display >Hi</app-stats-display>
     </div>
   </div>
 </div>

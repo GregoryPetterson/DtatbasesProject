@@ -9,7 +9,7 @@ import { Stats } from './stats';
 @Injectable({
   providedIn: 'root'
 })
-export class FileUploaderService {
+export class StatsService {
   // The URL for the forms part of the server API
   readonly fileUrl: string = `${environment.apiUrl}files/get`;
   readonly newFilesUrl: string = `${environment.apiUrl}files/post`;
@@ -17,13 +17,12 @@ export class FileUploaderService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getAllFiles(): Observable<File[]> {
-    return this.httpClient.get<File[]>(this.fileUrl);
+  getAllStats(): Observable<Stats[]> {
+    return this.httpClient.get<Stats[]>(this.fileUrl);
   }
 
 
   uploadFile(file: File): Observable<string> {
-    // Assuming you have a JSON string called 'fileJson'
     const formData = new FormData();
     formData.append('file', file, file.name);
 

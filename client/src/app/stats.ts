@@ -31,4 +31,4 @@ export interface Stats {
     };
   };
   DataVersion: number;
-}
+};

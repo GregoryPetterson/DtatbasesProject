@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { FilePickerDirective } from './file-picker.directive';
-import { FileUploaderService } from './uploader.service';
+import { StatsService } from './stats.service';
 import { Stats } from './stats';
 
 
@@ -15,7 +15,7 @@ export class AppComponent {
 
   selectedFiles: File[] = [];
 
-  constructor( private fileUploader: FileUploaderService) {}
+  constructor( private fileUploader: StatsService) {}
 
   onFilesChanged(files: FileList) {
     this.selectedFiles = Array.from(files);
