@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FilePickerDirective } from './file-picker.directive';
 import { FileUploaderService } from './uploader.service';
+import { Stats } from './stats';
 
 
 @Component({
@@ -30,8 +31,11 @@ export class AppComponent {
   }
 
   onSubmit(): void {
-    this.fileUploader.uploadFiles(this.selectedFiles)
+    this.selectedFiles.forEach((file: File) => {
+      this.fileUploader.uploadFile(file)
       .subscribe(response => console.log('Upload response:', response));
+    });
+
   }
 
 

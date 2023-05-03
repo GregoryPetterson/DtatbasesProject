@@ -41,7 +41,7 @@ public class Server {
     MongoDatabase database = mongoClient.getDatabase(databaseName);
 
     // Initialize dependencies
-    StatsController userController = new StatsController(database);
+    StatsController statsController = new StatsController(database);
 
     Javalin server = Javalin.create(config ->
       config.plugins.register(new RouteOverviewPlugin("/api"))
@@ -62,11 +62,11 @@ public class Server {
     server.start(SERVER_PORT);
 
     // List users, filtered using query parameters
-    server.get("/api/users", userController::getUsers);
+    server.get("/api/files/get", statsController::getCombinedStats);
 
     // Add new user with the user info being in the JSON body
     // of the HTTP request
-    server.post("/api/users", userController::addNewUser);
+    server.post("/api/files/post", statsController::addStats);
 
     // This catches any uncaught exceptions thrown in the server
     // code and turns them into a 500 response ("Internal Server
