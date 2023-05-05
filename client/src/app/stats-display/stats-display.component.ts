@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { StatsService } from '../stats.service';
 
-
 @Component({
   selector: 'app-stats-display',
   templateUrl: './stats-display.component.html',
@@ -22,8 +21,7 @@ export class StatsDisplayComponent implements OnInit, OnDestroy{
     ).subscribe({
       next: (stats) => {
         this.servedStats = stats;
-        console.log(this.servedStats);
-
+        this.combinedStats = this.combineStats(this.servedStats);
       },
 
       error: (err) => {
@@ -39,14 +37,12 @@ export class StatsDisplayComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     this.getStatsFromServer();
-    console.log(this.servedStats);
-    this.combinedStats = this.combineStats(this.servedStats);
-}
+  }
 
-ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-}
+  }
 
   combineStats(worldStats: JSON[]) {
     const db = {};
@@ -71,6 +67,7 @@ ngOnDestroy(): void {
         }
       });
     });
+    console.log(db);
     return db;
   }
 }
