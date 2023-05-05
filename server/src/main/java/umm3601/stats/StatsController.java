@@ -23,7 +23,7 @@ public class StatsController {
   public StatsController(MongoDatabase database) {
     statsCollection = JacksonMongoCollection.builder().build(
         database,
-        "forms",
+        "stats",
         Document.class,
         UuidRepresentation.STANDARD);
   }
@@ -62,7 +62,7 @@ public class StatsController {
   public void addStats(Context ctx) {
 
 
-    Document statsDocument = Document.parse(ctx.body().toString());
+    Document statsDocument = Document.parse(ctx.body());
     System.out.println(statsDocument);
 
     statsCollection.insertOne(statsDocument);

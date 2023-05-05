@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
-import { Stats } from './stats';
 
 
 @Injectable({
@@ -17,8 +16,8 @@ export class StatsService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getAllStats(): Observable<Stats[]> {
-    return this.httpClient.get<Stats[]>(this.fileUrl);
+  getAllStats(): Observable<JSON[]> {
+    return this.httpClient.get<JSON[]>(this.fileUrl);
   }
 
 

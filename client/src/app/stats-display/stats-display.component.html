@@ -9,18 +9,22 @@
       <mat-card>
         <mat-card>
           <mat-card-content>
-            <div *ngFor="let stat of servedStats">
-              <mat-list>
-                <mat-list *ngFor="let item of stat.stats | keyvalue">
-                  <mat-list-item *ngFor="let v of item | keyvalue">
-
-                    <mat-list-item *ngFor="let thing of v.value | keyvalue">
-                      {{ thing.key }}
-                    </mat-list-item>
-                  </mat-list-item>
-                </mat-list>
-              </mat-list>
-            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Stat</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let category of combinedStats">
+                  <td>{{ category }}</td>
+                  <td *ngFor="let stat of combinedStats[category]">{{ stat }}</td>
+                  <td *ngFor="let value of combinedStats[category]">{{ value }}</td>
+                </tr>
+              </tbody>
+            </table>
           </mat-card-content>
         </mat-card>
       </mat-card>

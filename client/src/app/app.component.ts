@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { FilePickerDirective } from './file-picker.directive';
 import { StatsService } from './stats.service';
-import { Stats } from './stats';
 
 
 @Component({
