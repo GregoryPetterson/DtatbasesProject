@@ -1,33 +1,19 @@
 
-<div class="flex-row">
-  <div class="flex-1">
-
-    <mat-card class="search-card">
-      <mat-card-header>
-        <mat-card-title class="stats-table-title">Your Minecraft Stats</mat-card-title>
-      </mat-card-header>
-      <mat-card>
-        <mat-card>
-          <mat-card-content>
-            <div *ngFor="let category of combinedStats | keyvalue">
-              <h3>{{ category.key }}</h3>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Stat</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let stat of category.value | keyvalue">
-                    <td>{{ stat.key }}</td>
-                    <td>{{ stat.value }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+<mat-card>
+  <mat-card-content>
+    <div class="category" *ngFor="let category of combinedStats | keyvalue">
+      <mat-card-title>{{ category.key }} statistics:</mat-card-title>
+      <table>
+        <tbody>
+          <tr *ngFor="let stat of category.value | keyvalue">
+            <td>{{ stat.key }}</td>
+            <td>{{ stat.value }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
 
 
-          </mat-card-content>
-        </mat-card>
-      </mat-card>
+

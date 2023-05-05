@@ -48,26 +48,27 @@ export class StatsDisplayComponent implements OnInit, OnDestroy{
     const db = {};
 
     worldStats.forEach(file => {
-      const stringJSON = JSON.stringify(file);
+      // Turn into string and regex out "minecraft:" prefix
+      // so it just displays "cooked_porkchop" instead of "minecraft:cooked_porkchop".
+      const stringJSON = JSON.stringify(file).replace(/minecraft:/g, '');
       const stats = JSON.parse(stringJSON).stats;
 
       Object.keys(stats).forEach(col => {
-        // creates minecraft:custom, minecraft:mined
+        // creates statistic categories. E.g. custom, mined, crafted... etc.
         if (db[col] === undefined) {
           db[col] = {};
         }
 
-        // for each col, grab the key&value and add to our db
+        // For each col in the JSON, grab the key&value and add to our db
         for (const [key, value] of Object.entries(stats[col])) {
-          // if the key isn't in our database, ex. minecraft:play_time isn't in our db
-          if (db[col][key] === undefined) {
-            db[col][key] = 0;
+          // if the key isn't in our database, e.g. damage_dealt isn't in our db
+          if (db[col][key] === undefined) { // Checks if the key exists in the db object under the current property.
+            db[col][key] = 0; // Creates a new value of zerof if the key doesn't exist.
           }
-          db[col][key] += value;
+          db[col][key] += value; // Adds the value of the current key to the value in the db object.
         }
       });
     });
-    console.log(db);
     return db;
   }
 }

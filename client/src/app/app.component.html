@@ -1,9 +1,16 @@
-<!DOCTYPE html>
-
-<div fxFlexFill fxLayout="column">
-  <mat-toolbar fxLayoutGap="16px">
-    <span fxFlex>Minecraft World Statistics</span>
+<div fxFlexFill fxLayout="row">
+  <mat-toolbar fxLayoutGap="200px">
+    <mat-card-title>Databases Project Ollie and Gregory</mat-card-title>
   </mat-toolbar>
+  <mat-card>
+    <mat-card-content>
+     <p> Each Minecraft world has a JSON that contains its stats.
+      that can be found in the Minecraft's appData folder. <br>
+      With this app you can upload each world's stats
+      and display the combined stats of all your worlds. <br>
+      Statistics like how many mobs you've killed, how many times you've died, how much stone you've mined, etc.</p>
+</mat-card-content>
+</mat-card>
 
   <mat-toolbar>
     <button #filePicker="appFilePicker" mat-raised-button color="primary" appFilePicker
@@ -15,7 +22,8 @@
     <mat-divider></mat-divider>
     <div>
       <mat-toolbar>
-        <span>Uploaded Files:</span>
+        <span>Uploaded
+          worlds:</span>
       </mat-toolbar>
       <app-selected-files-table [files]="selectedFiles"></app-selected-files-table>
     </div>
@@ -26,7 +34,7 @@
       <mat-toolbar>
         <span>Your Minecraft Stats:</span>
       </mat-toolbar>
-      <app-stats-display >Hi</app-stats-display>
+      <app-stats-display></app-stats-display>
     </div>
   </div>
 </div>
